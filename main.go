@@ -6,9 +6,23 @@ import (
 	"os"
 
 	"github.com/evalphobia/go-timber/timber"
+	"github.com/sony/gobreaker"
 )
 
-const p = "8080"
+const p = "8081"
+
+var cb *gobreaker.CircuitBreaker
+
+func init() {
+	var st gobreaker.Settings
+	st.Name = "HTTP GET"
+	st.ReadyToTrip = func(counts gobreaker.Counts) bool {
+		failureRatio := float64(counts.TotalFailures) / float64(counts.Requests)
+		return counts.Requests >= 3 && failureRatio >= 0.6
+	}
+
+	cb = gobreaker.NewCircuitBreaker(st)
+}
 
 func main() {
 
@@ -25,7 +39,7 @@ func main() {
 	cli, err := timber.New(conf)
 	models.HandleError(err)
 
-	r := server.SetupRouter(cli)
+	r := server.SetupRouter(cli, cb)
 	//r := setupRouter()
 	// Listen and Server in 0.0.0.0:8080
 	r.Run(":" + p)

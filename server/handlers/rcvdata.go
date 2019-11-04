@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -9,32 +10,68 @@ import (
 	"github.com/sony/gobreaker"
 )
 
-var cb *gobreaker.CircuitBreaker
-
-func init() {
-	var st gobreaker.Settings
-	st.Name = "HTTP GET"
-	st.ReadyToTrip = func(counts gobreaker.Counts) bool {
-		failureRatio := float64(counts.TotalFailures) / float64(counts.Requests)
-		return counts.Requests >= 3 && failureRatio >= 0.6
-	}
-
-	cb = gobreaker.NewCircuitBreaker(st)
-}
-
 /*RcvData funcao para encapsular o handler e permitir a passagem do banco por parametro*/
-func RcvData(cli *timber.Client) gin.HandlerFunc {
-	fn := func(c *gin.Context) {
-		/*_, err := cb.Execute(func() (interface{}, error) {
+func RcvData(cli *timber.Client, cb *gobreaker.CircuitBreaker) gin.HandlerFunc {
+	log.Println("Iniciando Req")
 
+	fn := func(c *gin.Context) {
+
+		_, err := cb.Execute(func() (interface{}, error) {
+			resp, err := http.Get("http://localhost:8081/retrievedata")
+
+			if err != nil {
+				return nil, err
+			}
+
+			defer resp.Body.Close()
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			log.Printf(string(body))
+			c.JSON(http.StatusCreated, gin.H{"message": "Processado sem erros."})
+
+			return body, nil
 		})
 		if err != nil {
+			log.Printf("Erro")
+		}
+		log.Printf(cb.State().String())
 
-		}*/
-		log.Println("Iniciando IH_010")
-		cli.Info("Iniciando IH_010")
+	}
+	return gin.HandlerFunc(fn)
 
-		c.JSON(http.StatusCreated, gin.H{"message": "Processado sem erros."})
+}
+
+/*RcvData2 funcao para encapsular o handler e permitir a passagem do banco por parametro*/
+func RcvData2(cli *timber.Client, cb *gobreaker.CircuitBreaker) gin.HandlerFunc {
+	log.Println("Iniciando Req")
+
+	fn := func(c *gin.Context) {
+
+		log.Printf("teste exec")
+		_, err := http.Get("http://localhost:8081/retrievedata")
+		if err != nil {
+			log.Printf(err.Error())
+		}
+		log.Printf("exec ok")
+
+	}
+	return gin.HandlerFunc(fn)
+
+}
+
+/*RtrData funcao para encapsular o handler e permitir a passagem do banco por parametro*/
+func RtrData(cli *timber.Client, cb *gobreaker.CircuitBreaker) gin.HandlerFunc {
+	log.Println("Iniciando Req")
+
+	fn := func(c *gin.Context) {
+		log.Printf("teste exec")
+		_, err := http.Get("www.google.com")
+		if err != nil {
+			log.Printf(err.Error())
+		}
+		log.Printf("exec ok")
 	}
 	return gin.HandlerFunc(fn)
 
