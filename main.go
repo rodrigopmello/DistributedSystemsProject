@@ -9,16 +9,17 @@ import (
 	"github.com/sony/gobreaker"
 )
 
-const p = "8081"
+const p = "8080"
 
 var cb *gobreaker.CircuitBreaker
 
 func init() {
 	var st gobreaker.Settings
 	st.Name = "HTTP GET"
+	st.MaxRequests = 5
 	st.ReadyToTrip = func(counts gobreaker.Counts) bool {
 		failureRatio := float64(counts.TotalFailures) / float64(counts.Requests)
-		return counts.Requests >= 3 && failureRatio >= 0.6
+		return counts.Requests >= 3 && failureRatio >= 0.2
 	}
 
 	cb = gobreaker.NewCircuitBreaker(st)

@@ -20,6 +20,7 @@ func RcvData(cli *timber.Client, cb *gobreaker.CircuitBreaker) gin.HandlerFunc {
 			resp, err := http.Get("http://localhost:8081/retrievedata")
 
 			if err != nil {
+				log.Printf("teste %s", err.Error())
 				return nil, err
 			}
 
