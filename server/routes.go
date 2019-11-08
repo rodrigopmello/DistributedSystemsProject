@@ -1,15 +1,15 @@
 package server
 
 import (
+	"ProjetoFinalDistribuida/cb"
 	"ProjetoFinalDistribuida/server/handlers"
 
 	"github.com/evalphobia/go-timber/timber"
 	"github.com/gin-gonic/gin"
-	"github.com/sony/gobreaker"
 )
 
 /*SetupRouter inicializa o gin*/
-func SetupRouter(cli *timber.Client, cb *gobreaker.CircuitBreaker) *gin.Engine {
+func SetupRouter(cli *timber.Client, cb *cb.Circuitbreaker) *gin.Engine {
 	r := gin.Default()
 
 	r.GET("/rcvdata", handlers.RcvData(cli, cb))

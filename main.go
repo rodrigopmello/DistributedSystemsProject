@@ -1,29 +1,17 @@
 package main
 
 import (
+	"ProjetoFinalDistribuida/cb"
 	"ProjetoFinalDistribuida/models"
 	"ProjetoFinalDistribuida/server"
+	"log"
 	"os"
+	"time"
 
 	"github.com/evalphobia/go-timber/timber"
-	"github.com/sony/gobreaker"
 )
 
 const p = "8080"
-
-var cb *gobreaker.CircuitBreaker
-
-func init() {
-	var st gobreaker.Settings
-	st.Name = "HTTP GET"
-	st.MaxRequests = 5
-	st.ReadyToTrip = func(counts gobreaker.Counts) bool {
-		failureRatio := float64(counts.TotalFailures) / float64(counts.Requests)
-		return counts.Requests >= 3 && failureRatio >= 0.2
-	}
-
-	cb = gobreaker.NewCircuitBreaker(st)
-}
 
 func main() {
 
@@ -39,6 +27,20 @@ func main() {
 
 	cli, err := timber.New(conf)
 	models.HandleError(err)
+	var opt cb.Options
+	opt.Failurethreshold = 3
+	opt.Timeout = 3
+
+	opt.Resettimeout = 3
+	dur, err := time.ParseDuration("30s")
+	if err != nil {
+		log.Println("Error during parse duration")
+	}
+	opt.Retrytimeperiod = dur
+
+	log.Printf("%+v ", opt)
+
+	cb := cb.New(opt)
 
 	r := server.SetupRouter(cli, cb)
 	//r := setupRouter()

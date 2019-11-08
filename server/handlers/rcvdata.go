@@ -1,26 +1,26 @@
 package handlers
 
 import (
+	"ProjetoFinalDistribuida/cb"
 	"io/ioutil"
 	"log"
 	"net/http"
 
 	"github.com/evalphobia/go-timber/timber"
 	"github.com/gin-gonic/gin"
-	"github.com/sony/gobreaker"
 )
 
 /*RcvData funcao para encapsular o handler e permitir a passagem do banco por parametro*/
-func RcvData(cli *timber.Client, cb *gobreaker.CircuitBreaker) gin.HandlerFunc {
+func RcvData(cli *timber.Client, cb *cb.Circuitbreaker) gin.HandlerFunc {
 	log.Println("Iniciando Req")
 
 	fn := func(c *gin.Context) {
 
-		_, err := cb.Execute(func() (interface{}, error) {
+		_, err := cb.CallFunc(func() (interface{}, error) {
 			resp, err := http.Get("http://localhost:8081/retrievedata")
 
 			if err != nil {
-				log.Printf("teste %s", err.Error())
+				log.Printf("teste auxiliar %s", err.Error())
 				return nil, err
 			}
 
@@ -37,7 +37,7 @@ func RcvData(cli *timber.Client, cb *gobreaker.CircuitBreaker) gin.HandlerFunc {
 		if err != nil {
 			log.Printf("Erro")
 		}
-		log.Printf(cb.State().String())
+		//log.Printf(cb.State().String())
 
 	}
 	return gin.HandlerFunc(fn)
@@ -45,7 +45,7 @@ func RcvData(cli *timber.Client, cb *gobreaker.CircuitBreaker) gin.HandlerFunc {
 }
 
 /*RcvData2 funcao para encapsular o handler e permitir a passagem do banco por parametro*/
-func RcvData2(cli *timber.Client, cb *gobreaker.CircuitBreaker) gin.HandlerFunc {
+func RcvData2(cli *timber.Client, cb *cb.Circuitbreaker) gin.HandlerFunc {
 	log.Println("Iniciando Req")
 
 	fn := func(c *gin.Context) {
@@ -63,7 +63,7 @@ func RcvData2(cli *timber.Client, cb *gobreaker.CircuitBreaker) gin.HandlerFunc 
 }
 
 /*RtrData funcao para encapsular o handler e permitir a passagem do banco por parametro*/
-func RtrData(cli *timber.Client, cb *gobreaker.CircuitBreaker) gin.HandlerFunc {
+func RtrData(cli *timber.Client, cb *cb.Circuitbreaker) gin.HandlerFunc {
 	log.Println("Iniciando Req")
 
 	fn := func(c *gin.Context) {
