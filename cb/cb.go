@@ -12,8 +12,6 @@ type State string
 /*Options definicao dos parametros do cb*/
 type Options struct {
 	Failurethreshold int
-	Timeout          int
-	Resettimeout     int
 	Retrytimeperiod  time.Duration
 }
 
@@ -80,8 +78,6 @@ func (c *Circuitbreaker) CallFunc(f func() (interface{}, error)) (interface{}, e
 
 	case "half-open":
 		log.Printf("Half-open state")
-		//what should i do in this state?
-
 		output, err := f()
 		if err != nil {
 

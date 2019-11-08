@@ -29,9 +29,6 @@ func main() {
 	models.HandleError(err)
 	var opt cb.Options
 	opt.Failurethreshold = 3
-	opt.Timeout = 3
-
-	opt.Resettimeout = 3
 	dur, err := time.ParseDuration("30s")
 	if err != nil {
 		log.Println("Error during parse duration")
