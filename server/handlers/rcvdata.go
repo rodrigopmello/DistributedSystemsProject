@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"ProjetoFinalDistribuida/cb"
+	"ProjetoFinalDistribuida/sigon"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -98,10 +99,17 @@ func ExecRemoteCall(cli *timber.Client, cb *cb.Circuitbreaker) gin.HandlerFunc {
 			}
 			defer client.Close()
 			log.Print(client)
-			args := Args{"rodrigopmello"}
+			var param sigon.Argsagent
+			err1 := c.BindJSON(&param)
+			if err1 != nil {
+				log.Printf(err1.Error())
+				cli.Err(err1.Error())
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return nil, err1
+			}
 
 			var reply = ""
-			err = client.Call("Findrepositories.Search", args, &reply)
+			err = client.Call("Awareness.Notify", param, &reply)
 			log.Print(reply)
 			if err != nil {
 				log.Print(err.Error())
