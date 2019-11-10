@@ -31,7 +31,7 @@ func main() {
 	opt.Failurethreshold = 3
 	dur, err := time.ParseDuration("30s")
 	if err != nil {
-		log.Println("Error during parse duration")
+		log.Println("Error during parsing duration")
 	}
 	opt.Retrytimeperiod = dur
 
