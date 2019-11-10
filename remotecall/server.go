@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -15,10 +16,27 @@ type Args struct {
 /*Findrepositories responsavel por executar a funcao*/
 type Findrepositories string
 
+type itemdata [][]string
+
 /*Search funcao que ira executar a busca na API*/
 func (f *Findrepositories) Search(args *Args, reply *string) error {
 	log.Printf("exec")
+	log.Print(args.Username)
+	log.Print(&args.Username)
 	*reply = "not found"
+	resp, err := http.Get("https://api.github.com/users/" + args.Username + "/repos")
+	if err != nil {
+		log.Printf(err.Error())
+		return err
+	}
+
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	log.Printf(string(body))
+
 	return nil
 }
 
