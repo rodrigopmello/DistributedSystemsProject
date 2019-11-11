@@ -86,15 +86,16 @@ type Args struct {
 
 /*ExecRemoteCall funcao que ira executar uma remote call usando o circuit breaker*/
 func ExecRemoteCall(cli *timber.Client, cb *cb.Circuitbreaker) gin.HandlerFunc {
-	log.Println("Iniciando Remote Call")
 
 	fn := func(c *gin.Context) {
-
+		log.Println("Iniciando Remote Call")
+		cli.Info("S1: Executando remote procudure call (Awareness.Notify)")
 		_, err := cb.CallFunc(func() (interface{}, error) {
+
 			client, err := rpc.DialHTTP("tcp", "localhost:1234")
 			if err != nil {
 				log.Print("Connection error: ", err)
-
+				cli.Fatal("S1: Erro de conexão")
 				return nil, err
 			}
 			defer client.Close()
@@ -104,6 +105,8 @@ func ExecRemoteCall(cli *timber.Client, cb *cb.Circuitbreaker) gin.HandlerFunc {
 			if err1 != nil {
 				log.Printf(err1.Error())
 				cli.Err(err1.Error())
+				cli.Err("S1: Erro de binding do json")
+
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return nil, err1
 			}
@@ -111,13 +114,17 @@ func ExecRemoteCall(cli *timber.Client, cb *cb.Circuitbreaker) gin.HandlerFunc {
 			var reply = ""
 			err = client.Call("Awareness.Notify", param, &reply)
 			log.Print(reply)
+			cli.Info("S1: Respostas de S2: " + reply)
+
 			if err != nil {
 				log.Print(err.Error())
+				cli.Err(err.Error())
 			}
 			return nil, nil
 		})
 		if err != nil {
 			log.Printf("Erro")
+			cli.Err(err.Error())
 		}
 
 		//log.Printf(cb.State().String())

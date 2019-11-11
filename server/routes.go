@@ -10,6 +10,7 @@ import (
 
 /*SetupRouter inicializa o gin*/
 func SetupRouter(cli *timber.Client, cb *cb.Circuitbreaker) *gin.Engine {
+
 	r := gin.Default()
 
 	r.GET("/rcvdata", handlers.RcvData(cli, cb))
