@@ -8,24 +8,22 @@ import (
 	"os"
 	"time"
 
-	"github.com/joho/godotenv"
-
 	"github.com/evalphobia/go-timber/timber"
 )
 
 const p = "8080"
 
 func main() {
-	err := godotenv.Load()
+	/*err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
-	}
+	}*/
 	conf := timber.Config{
 		APIKey:         os.Getenv("TIMBER_API_KEY"),
 		SourceID:       os.Getenv("TIMBER_SOURCE_ID"),
 		CustomEndpoint: "https://logs.timber.io",
 		Environment:    "production",
-		MinimumLevel:   timber.LogLevelInfo,
+		MinimumLevel:   timber.LogLevelError,
 		Sync:           true,
 		Debug:          true,
 	}

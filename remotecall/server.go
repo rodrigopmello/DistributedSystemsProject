@@ -9,20 +9,19 @@ import (
 	"os"
 
 	"github.com/evalphobia/go-timber/timber"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load()
+	/*err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
-	}
+	}*/
 	conf := timber.Config{
 		APIKey:         os.Getenv("TIMBER_API_KEY"),
 		SourceID:       os.Getenv("TIMBER_SOURCE_ID"),
 		CustomEndpoint: "https://logs.timber.io",
 		Environment:    "production",
-		MinimumLevel:   timber.LogLevelInfo,
+		MinimumLevel:   timber.LogLevelError,
 		Sync:           true,
 		Debug:          true,
 	}
@@ -35,7 +34,7 @@ func main() {
 
 	rep := new(sigon.Awareness)
 
-	err = rpc.Register(rep)
+	err := rpc.Register(rep)
 	if err != nil {
 		log.Fatal("Format of service isn't correct. ", err)
 		cli.Fatal("S2: Formato do servico incorreto")
@@ -55,6 +54,6 @@ func main() {
 	err = http.Serve(listener, nil)
 	if err != nil {
 		log.Fatal("Error serving: ", err)
-		cli.Fatal("S2: Erro ao iniciar o RPC Server")
+		//cli.Fatal("S2: Erro ao iniciar o RPC Server")
 	}
 }
