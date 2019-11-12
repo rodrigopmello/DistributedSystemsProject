@@ -23,7 +23,7 @@ func main() {
 		SourceID:       os.Getenv("TIMBER_SOURCE_ID"),
 		CustomEndpoint: "https://logs.timber.io",
 		Environment:    "production",
-		MinimumLevel:   timber.LogLevelError,
+		MinimumLevel:   timber.LogLevelFatal,
 		Sync:           true,
 		Debug:          true,
 	}
@@ -31,8 +31,8 @@ func main() {
 	cli, err := timber.New(conf)
 	models.HandleError(err)
 	var opt cb.Options
-	opt.Failurethreshold = 3
-	dur, err := time.ParseDuration("30s")
+	opt.Failurethreshold = 1
+	dur, err := time.ParseDuration("10s")
 	if err != nil {
 		log.Println("Error during parsing duration")
 		cli.Fatal("S1: Error during duration settup")

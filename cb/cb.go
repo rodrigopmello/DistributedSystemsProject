@@ -42,7 +42,7 @@ func New(opt Options) *Circuitbreaker {
 
 func (c *Circuitbreaker) setState() {
 	log.Printf("Definindo estado")
-	log.Printf("failure count %d", c.failurecount)
+	log.Printf("current failure count %d", c.failurecount)
 	if c.failurecount > c.o.Failurethreshold {
 		if time.Now().Sub(c.lastfailuretime) > c.o.Retrytimeperiod {
 			c.s = "half-open"
@@ -60,6 +60,7 @@ func (c *Circuitbreaker) CallFunc(f func() (interface{}, error)) (interface{}, e
 	c.setState()
 	switch c.s {
 	case "closed":
+		log.Printf("Closed state")
 		output, err := f()
 		if err != nil {
 			//execucao falhou mesmo assim,
@@ -67,13 +68,13 @@ func (c *Circuitbreaker) CallFunc(f func() (interface{}, error)) (interface{}, e
 			return nil, err
 		}
 		c.reset()
-		log.Printf("Closed state")
 		return output, nil
 
 	case "open":
 		log.Printf("Open state")
 		//TODO: return an error
-		c.recordfailure()
+		//c.recordfailure()
+		//c.failurecount++
 		return nil, ErrCircuitBreakerOpen
 
 	case "half-open":

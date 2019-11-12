@@ -117,6 +117,7 @@ func ExecRemoteCall(cli *timber.Client, cb *cb.Circuitbreaker) gin.HandlerFunc {
 			if err != nil {
 				log.Print(err.Error())
 				cli.Err(err.Error())
+				return nil, err
 			}
 			log.Print(reply)
 			cli.Info("S1: Respostas de S2: " + reply)

@@ -67,7 +67,7 @@ func main() {
 		body, err := ioutil.ReadAll(resp.Body)
 
 		log.Println(string(body))
-		time.Sleep(5 * time.Second)
+		time.Sleep(18 * time.Second)
 
 	}
 

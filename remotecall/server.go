@@ -56,4 +56,5 @@ func main() {
 		log.Fatal("Error serving: ", err)
 		//cli.Fatal("S2: Erro ao iniciar o RPC Server")
 	}
+
 }

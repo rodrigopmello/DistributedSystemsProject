@@ -1,8 +1,17 @@
 package sigon
 
 import (
+	"errors"
 	"fmt"
 	"log"
+	"time"
+)
+
+var count = 0
+
+var (
+	//ErrProgramao will throw if circuit breaker is half open
+	ErrProgramao = errors.New("Erro programado")
 )
 
 /*Argsagent representa os argumentos necessario para a execucao da funcao de awareness do sigon*/
@@ -22,6 +31,12 @@ type Awareness struct {
 	Nearestcardirection string
 	Threadhold          float64
 	cars                []car
+	count               int
+}
+
+type Simulation struct {
+	count        int
+	previousTime time.Time
 }
 
 type car struct {
@@ -53,13 +68,37 @@ func (s *Awareness) samediretion() bool {
 	return true
 }
 
+//var duration = time.Duration(5 * time.Second)
+var previous = time.Now()
+var time2fail = 5
+
 /*Notify funcao que ira consultar o sigon para definir nivel de awareness e notificar o pedestre*/
 func (s *Awareness) Notify(args *Argsagent, reply *string) error {
-	log.Printf("exec")
+	count++
+	log.Printf("exec %d", count)
+
+	if count == 2 {
+		previous = time.Now().Add(30 * time.Second)
+	}
+	log.Printf(previous.String())
+	log.Printf(time.Now().String())
+	for time.Now().Before(previous) {
+		return ErrProgramao
+	}
+
+	/*if count > 2 {
+		log.Printf(previous.String())
+		log.Printf(previous.String())
+		if time.Now().Before(previous) {
+			return ErrProgramao
+		}
+	}*/
+
 	if s.distance(args.PositionX, args.PositionY) < s.Threadhold && s.samediretion() {
 		*reply = "NotificyCar"
 	}
 	*reply = "NotifyPedestrian"
+
 	return nil
 
 }
