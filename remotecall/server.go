@@ -2,6 +2,9 @@ package main
 
 import (
 	"ProjetoFinalDistribuida/sigon"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -11,7 +14,25 @@ import (
 	"github.com/evalphobia/go-timber/timber"
 )
 
+type config struct {
+	Falha1       int `json:"falha1"`
+	Falha2       int `json:"falha2"`
+	SegundosFora int `json:"segundosFora"`
+}
+
 func main() {
+	jsonFile, err := os.Open("config.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var cfg config
+
+	json.Unmarshal(byteValue, &cfg)
 	/*err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -31,10 +52,12 @@ func main() {
 	if errT != nil {
 		cli.Info(errT.Error())
 	}
+	log.Printf("%d %d %d", cfg.Falha1, cfg.Falha2, cfg.SegundosFora)
 
 	rep := new(sigon.Awareness)
+	rep.Init(cfg.Falha1, cfg.Falha2, cfg.SegundosFora)
 
-	err := rpc.Register(rep)
+	err = rpc.Register(rep)
 	if err != nil {
 		log.Fatal("Format of service isn't correct. ", err)
 		cli.Fatal("S2: Formato do servico incorreto")
