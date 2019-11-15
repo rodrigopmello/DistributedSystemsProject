@@ -52,7 +52,7 @@ func main() {
 	if errT != nil {
 		cli.Info(errT.Error())
 	}
-	log.Printf("%d %d %d", cfg.Falha1, cfg.Falha2, cfg.SegundosFora)
+	log.Printf("S2: Parâmetros %d %d %d", cfg.Falha1, cfg.Falha2, cfg.SegundosFora)
 
 	rep := new(sigon.Awareness)
 	rep.Init(cfg.Falha1, cfg.Falha2, cfg.SegundosFora)

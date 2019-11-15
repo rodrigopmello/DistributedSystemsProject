@@ -2,7 +2,6 @@ package sigon
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"math"
 	"time"
@@ -17,11 +16,12 @@ var (
 
 /*Argsagent representa os argumentos necessario para a execucao da funcao de awareness do sigon*/
 type Argsagent struct {
-	PositionX float64
-	PositionY float64
-	Speed     float64
-	RoadID    int
-	Direction string
+	PositionX  float64
+	PositionY  float64
+	Speed      float64
+	RoadID     int
+	Direction  string
+	Simulation bool //parametro para controlar se é uma simulacao ou nao
 }
 
 /*Awareness é o agente que irá definir se um usuário de smartphone está consciente ou nao*/
@@ -61,16 +61,12 @@ func (s *Awareness) Init(count1 int, count2 int, secondsOff int) {
 	}
 	//var cars [1]car
 	//cars[0] = car{"1", "1", 2.0, 2.0}
-	fmt.Println("teste")
-	fmt.Println(s.cars[0].carID)
+	/*Parametros para teste*/
 	s.Musicon = true
 	s.Carsound = "high"
 	s.Touchingscreen = false
 	count2fail1 = count1
 	count2fail2 = count2
-	log.Printf("%d", count1)
-	log.Printf("%d", count2)
-
 	secondsDown = secondsOff
 
 }
@@ -88,15 +84,16 @@ func (s *Awareness) samediretion() bool {
 
 /*Notify funcao que ira consultar o sigon para definir nivel de awareness e notificar o pedestre*/
 func (s *Awareness) Notify(args *Argsagent, reply *string) error {
-	count++
-	log.Printf("exec %d", count)
-	log.Printf("%d ", count2fail1)
-	log.Printf("%d ", count2fail2)
-	if count == count2fail1 || count == count2fail2 {
-		s.previous = time.Now().Add(time.Duration(secondsDown) * time.Second)
-	}
-	for time.Now().Before(s.previous) {
-		return ErrProgramao
+	log.Printf("S2: %t \n", args.Simulation)
+	if args.Simulation {
+		count++
+		log.Printf("S2: execucao %d", count)
+		if count == count2fail1 || count == count2fail2 {
+			s.previous = time.Now().Add(time.Duration(secondsDown) * time.Second)
+		}
+		for time.Now().Before(s.previous) {
+			return ErrProgramao
+		}
 	}
 
 	if s.distance(args.PositionX, args.PositionY) < s.Threadhold && s.samediretion() {

@@ -16,6 +16,7 @@ func SetupRouter(cli *timber.Client, cb *cb.Circuitbreaker) *gin.Engine {
 	r.GET("/rcvdata", handlers.RcvData(cli, cb))
 	r.GET("/rcvdata2", handlers.RcvData2(cli, cb))
 	r.POST("/exec", handlers.ExecRemoteCall(cli, cb))
+	r.POST("/execSimulation", handlers.ExecRemoteCallSimulation(cli, cb))
 
 	r.GET("/retrievedata", handlers.RtrData(cli, cb))
 

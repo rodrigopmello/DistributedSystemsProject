@@ -117,11 +117,12 @@ func ExecRemoteCall(cli *timber.Client, cb *cb.Circuitbreaker) gin.HandlerFunc {
 			if err != nil {
 				log.Print(err.Error())
 				cli.Err(err.Error())
+				c.JSON(http.StatusCreated, gin.H{"message": "NotifyTrafficLight"})
 				return nil, err
 			}
 			log.Print(reply)
 			cli.Info("S1: Respostas de S2: " + reply)
-			c.JSON(http.StatusCreated, gin.H{"message": "R:" + reply})
+			c.JSON(http.StatusCreated, gin.H{"message": reply})
 			return nil, nil
 		})
 		if err != nil {

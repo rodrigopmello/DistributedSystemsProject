@@ -41,7 +41,7 @@ func New(opt Options) *Circuitbreaker {
 }
 
 func (c *Circuitbreaker) setState() {
-	log.Printf("Definindo estado")
+	log.Printf("CB: Definindo estado")
 	log.Printf("current failure count %d", c.failurecount)
 	if c.failurecount > c.o.Failurethreshold {
 		if time.Now().Sub(c.lastfailuretime) > c.o.Retrytimeperiod {
@@ -71,14 +71,14 @@ func (c *Circuitbreaker) CallFunc(f func() (interface{}, error)) (interface{}, e
 		return output, nil
 
 	case "open":
-		log.Printf("Open state")
+		log.Printf("CB: Open state")
 		//TODO: return an error
 		//c.recordfailure()
 		//c.failurecount++
 		return nil, ErrCircuitBreakerOpen
 
 	case "half-open":
-		log.Printf("Half-open state")
+		log.Printf("CB: Half-open state")
 		output, err := f()
 		if err != nil {
 
