@@ -1,0 +1,43 @@
+{
+	"info": {
+		"_postman_id": "05e88128-6f8d-4e3f-8326-8c6a7e774420",
+		"name": "DIstribuida",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "teste 1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "exec",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t \"Positionx\": 2,\n\t \"Positiony\": 2,\n    \"Speed\": 10,\n    \"Roadid\": 1,\n    \"Direction\": \"north\",\n    \"Simulation\": false\n\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/exec",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"exec"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

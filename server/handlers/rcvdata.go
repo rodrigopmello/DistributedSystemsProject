@@ -99,7 +99,7 @@ func ExecRemoteCall(cli *timber.Client, cb *cb.Circuitbreaker) gin.HandlerFunc {
 				return nil, err
 			}
 			defer client.Close()
-			log.Print(client)
+			//log.Print(client)
 			var param sigon.Argsagent
 			err1 := c.BindJSON(&param)
 			if err1 != nil {
@@ -120,18 +120,16 @@ func ExecRemoteCall(cli *timber.Client, cb *cb.Circuitbreaker) gin.HandlerFunc {
 				c.JSON(http.StatusCreated, gin.H{"message": "NotifyTrafficLight"})
 				return nil, err
 			}
-			log.Print(reply)
+			log.Print("S1: Respostas de S2: " + reply)
 			cli.Info("S1: Respostas de S2: " + reply)
 			c.JSON(http.StatusCreated, gin.H{"message": reply})
 			return nil, nil
 		})
 		if err != nil {
-			log.Printf("Erro")
+			log.Printf("S1: Erro ao executar CB")
 			cli.Err(err.Error())
+			c.JSON(http.StatusCreated, gin.H{"message": "NotifyTrafficLight"})
 		}
-
-		//log.Printf(cb.State().String())
-
 	}
 	return gin.HandlerFunc(fn)
 

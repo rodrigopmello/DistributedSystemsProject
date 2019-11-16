@@ -84,7 +84,7 @@ func (s *Awareness) samediretion() bool {
 
 /*Notify funcao que ira consultar o sigon para definir nivel de awareness e notificar o pedestre*/
 func (s *Awareness) Notify(args *Argsagent, reply *string) error {
-	log.Printf("S2: %t \n", args.Simulation)
+	log.Printf("S2: Simulação %t \n", args.Simulation)
 	if args.Simulation {
 		count++
 		log.Printf("S2: execucao %d", count)

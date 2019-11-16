@@ -1,0 +1,4 @@
+{
+	"failurethreshold": 1,
+	"retrytimeperiod": "10s"
+}

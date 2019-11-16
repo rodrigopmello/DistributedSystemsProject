@@ -4,6 +4,9 @@ import (
 	"ProjetoFinalDistribuida/cb"
 	"ProjetoFinalDistribuida/models"
 	"ProjetoFinalDistribuida/server"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"time"
@@ -12,6 +15,11 @@ import (
 )
 
 const p = "8080"
+
+type cbCfg struct {
+	Failurethreshold int    `json:"failurethreshold"`
+	Retrytimeperiod  string `json:"retrytimeperiod"`
+}
 
 func main() {
 	/*err := godotenv.Load()
@@ -28,18 +36,31 @@ func main() {
 		Debug:          true,
 	}
 
+	jsonFile, err := os.Open("cb.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var cfg cbCfg
+
+	json.Unmarshal(byteValue, &cfg)
+
 	cli, err := timber.New(conf)
 	models.HandleError(err)
 	var opt cb.Options
-	opt.Failurethreshold = 1
-	dur, err := time.ParseDuration("10s")
+	opt.Failurethreshold = cfg.Failurethreshold
+	dur, err := time.ParseDuration(cfg.Retrytimeperiod)
 	if err != nil {
 		log.Println("Error during parsing duration")
-		cli.Fatal("S1: Error during duration settup")
+		cli.Fatal("S1: Error during duration setup")
 	}
 	opt.Retrytimeperiod = dur
 
-	//log.Printf("%+v ", opt)
+	log.Printf("S1: Configurações do Circuit Breaker %+v ", opt)
 
 	cb := cb.New(opt)
 	cli.Info("S1: Iniciando webservice REST")

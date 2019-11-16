@@ -25,11 +25,11 @@ type Circuitbreaker struct {
 
 var (
 	//ErrCircuitBreakerOpen will throw if circuit breaker is open
-	ErrCircuitBreakerOpen = errors.New("Circuit Breaker is open")
+	ErrCircuitBreakerOpen = errors.New("CB: Circuit Breaker is open")
 	//ErrRequest will throw if circuit breaker is closed, but the request failed for some othe reason
-	ErrRequest = errors.New("Error during request execution")
+	ErrRequest = errors.New("CB: Error during request execution")
 	//ErrCircuitBreakerHalfOpen will throw if circuit breaker is half open
-	ErrCircuitBreakerHalfOpen = errors.New("Circuit Breaker is half-open")
+	ErrCircuitBreakerHalfOpen = errors.New("CB: Circuit Breaker is half-open")
 )
 
 /*New criacao de um ponteiro para o cb com as opcoes passadas no opt*/
@@ -42,7 +42,7 @@ func New(opt Options) *Circuitbreaker {
 
 func (c *Circuitbreaker) setState() {
 	log.Printf("CB: Definindo estado")
-	log.Printf("current failure count %d", c.failurecount)
+	log.Printf("CB: Contador de falhas %d", c.failurecount)
 	if c.failurecount > c.o.Failurethreshold {
 		if time.Now().Sub(c.lastfailuretime) > c.o.Retrytimeperiod {
 			c.s = "half-open"
@@ -60,10 +60,10 @@ func (c *Circuitbreaker) CallFunc(f func() (interface{}, error)) (interface{}, e
 	c.setState()
 	switch c.s {
 	case "closed":
-		log.Printf("Closed state")
+		log.Printf("CB: Closed state")
 		output, err := f()
 		if err != nil {
-			//execucao falhou mesmo assim,
+			//execucao falhou mesmo assim
 			c.recordfailure()
 			return nil, err
 		}
