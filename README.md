@@ -4,7 +4,7 @@ Projeto final da disciplina INE410130 - Computação Distribuída
 
 Funcionamento geral: Requests são feitos em localhost:8080/exec
 
-Nesse endpoint o circuit breaker é chamado para a execução remota de uma função remota.
+Nesse endpoint o circuit breaker é chamado para a execução remota de uma função.
 
 Configurações do CB pode ser feita no arquivo cb.json, definindo threshold para falha e tempo para transição para o estado half-open
 
