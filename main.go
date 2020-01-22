@@ -22,7 +22,7 @@ type cbCfg struct {
 }
 
 func main() {
-	/*err := godotenv.Load() LOAD
+	/*err := godotenv.Load() asdasd
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}*/
