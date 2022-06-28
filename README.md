@@ -1,15 +1,37 @@
-# ProjetoFinalDistribuida
+# DistributedSystemsProject
 
-Projeto final da disciplina INE410130 - Computação Distribuída
+Distributed Systems Project (INE410130 - Computação Distribuída - UFSC)
 
-Funcionamento geral: Requests são feitos em localhost:8080/exec
+This project implements the circuit breaker pattern in Go. It is also implemented a remote procedure call, which is employed as part of urban environment experiment. 
 
-Nesse endpoint o circuit breaker é chamado para a execução remota de uma função.
+## Usage
 
-Configurações do CB pode ser feita no arquivo cb.json, definindo threshold para falha e tempo para transição para o estado half-open
+The circuit breaker configuration can be defined in the file called cb.json, which defines the threadhold and time to change to the half-open state. RPC are executed in the following host and port: localhost:8080/exec
 
-Configurações da simulação no servidor que implementa a RPC:
-Alterar o config.json que encontra-se na pasta remotecall: definir dois momentos para falhar e tempo para o serviço ficar fora.
+One can configure the server responsible for the simulation on the file called config.json present in the directory remotecall. This file is responsible the server errors parameters.
+
+
+## Run
+
+```
+$ go build -o cb
+$ ./cb 
+```
+
+
+## Makefile
+
+There is a simple makefile that can be used instead of go commands. 
+```
+$ make
+```
+
+There's also command to build a docker image of this project. 
+
+```
+$ make docker-build
+$ make docker-run
+```
 
 
 

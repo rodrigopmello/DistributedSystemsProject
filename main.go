@@ -60,13 +60,11 @@ func main() {
 	}
 	opt.Retrytimeperiod = dur
 
-	log.Printf("S1: Configurações do Circuit Breaker %+v ", opt)
+	log.Printf("S1: Circuit Breaker Config %+v ", opt)
 
 	cb := cb.New(opt)
-	cli.Info("S1: Iniciando webservice REST")
+	cli.Info("S1: Starting webservice")
 	r := server.SetupRouter(cli, cb)
-	//r := setupRouter()
-	// Listen and Server in 0.0.0.0:8080
 	r.Run(":" + p)
 
 }

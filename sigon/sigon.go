@@ -52,7 +52,7 @@ type car struct {
 //Init funcao para definir parametros dummies para o sigon
 func (s *Awareness) Init(count1 int, count2 int, secondsOff int) {
 	s.cars = []car{
-		car{
+		{
 			carID:     "1",
 			roadID:    "1",
 			positionX: 2.0,
@@ -61,7 +61,7 @@ func (s *Awareness) Init(count1 int, count2 int, secondsOff int) {
 	}
 	//var cars [1]car
 	//cars[0] = car{"1", "1", 2.0, 2.0}
-	/*Parametros para teste*/
+	/*Test params*/
 	s.Musicon = true
 	s.Carsound = "high"
 	s.Touchingscreen = false
@@ -82,12 +82,12 @@ func (s *Awareness) samediretion() bool {
 	return true
 }
 
-/*Notify funcao que ira consultar o sigon para definir nivel de awareness e notificar o pedestre*/
+/*Notify function used to defined awareness level and if required, a notification can be triggered.*/
 func (s *Awareness) Notify(args *Argsagent, reply *string) error {
-	log.Printf("S2: Simulação %t \n", args.Simulation)
+	log.Printf("S2: Simulation %t \n", args.Simulation)
 	if args.Simulation {
 		count++
-		log.Printf("S2: execucao %d", count)
+		log.Printf("S2: Execution %d", count)
 		if count == count2fail1 || count == count2fail2 {
 			s.previous = time.Now().Add(time.Duration(secondsDown) * time.Second)
 		}
@@ -111,50 +111,3 @@ func (s *Awareness) distance(px float64, py float64) float64 {
 
 	return math.Sqrt(x + y)
 }
-
-/*func main() {
-
-	conf := timber.Config{
-		APIKey:         os.Getenv("TIMBER_API_KEY"),
-		SourceID:       os.Getenv("TIMBER_SOURCE_ID"),
-		CustomEndpoint: "https://logs.timber.io",
-		Environment:    "production",
-		MinimumLevel:   timber.LogLevelError,
-		Sync:           true,
-		Debug:          true,
-	}
-
-	cli, errT := timber.New(conf)
-
-	if errT != nil {
-		cli.Info(errT.Error())
-	}
-
-	rep := new(Awareness)
-	rep.init()
-
-	err := rpc.Register(rep)
-	if err != nil {
-		log.Fatal("Format of service isn't correct. ", err)
-		cli.Fatal("S2: Formato do servico incorreto")
-	}
-	// Register a HTTP handler
-	rpc.HandleHTTP()
-	// Listen to TPC connections on port 1234
-	listener, e := net.Listen("tcp", ":1234")
-	if e != nil {
-		log.Fatal("Listen error: ", e)
-		cli.Fatal("S2: Erro na criacao da conexao TCP" + e.Error())
-
-	}
-	log.Printf("Serving RPC server on port %d", 1234)
-	cli.Info("S2: Iniciando RPC Server ")
-	// Start accept incoming HTTP connections
-	err = http.Serve(listener, nil)
-	if err != nil {
-		log.Fatal("Error serving: ", err)
-		//cli.Fatal("S2: Erro ao iniciar o RPC Server")
-	}
-
-}
-*/

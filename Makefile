@@ -1,10 +1,10 @@
-NAME=main
-IMAGENAME=projeto
+NAME=cb
+IMAGENAME=project
 
 
 all: 
 	go build -o $(NAME)
-	./main
+	./$(NAME)
 
 docker-build:
 	docker build -t $(IMAGENAME) .

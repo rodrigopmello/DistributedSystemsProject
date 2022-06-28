@@ -6,16 +6,16 @@ import (
 	"time"
 )
 
-/*State representa o estado (open, closed, and half-open) do cb*/
+/*State represents an state(open, closed, and half-open) from the cb*/
 type State string
 
-/*Options definicao dos parametros do cb*/
+/*Options defines the cb params*/
 type Options struct {
 	Failurethreshold int
 	Retrytimeperiod  time.Duration
 }
 
-/*Circuitbreaker representa o cb*/
+/*Circuitbreaker represents cb*/
 type Circuitbreaker struct {
 	o               Options
 	s               State
@@ -32,7 +32,6 @@ var (
 	ErrCircuitBreakerHalfOpen = errors.New("CB: Circuit Breaker is half-open")
 )
 
-/*New criacao de um ponteiro para o cb com as opcoes passadas no opt*/
 func New(opt Options) *Circuitbreaker {
 	var cb Circuitbreaker
 	cb.o = opt
@@ -41,8 +40,8 @@ func New(opt Options) *Circuitbreaker {
 }
 
 func (c *Circuitbreaker) setState() {
-	log.Printf("CB: Definindo estado")
-	log.Printf("CB: Contador de falhas %d", c.failurecount)
+	log.Printf("CB: State definition")
+	log.Printf("CB: Failure count %d", c.failurecount)
 	if c.failurecount > c.o.Failurethreshold {
 		if time.Now().Sub(c.lastfailuretime) > c.o.Retrytimeperiod {
 			c.s = "half-open"
@@ -55,7 +54,7 @@ func (c *Circuitbreaker) setState() {
 
 }
 
-/*CallFunc funcao responsável por executar a funcao f*/
+/*CallFunc is responsible to execute the function f*/
 func (c *Circuitbreaker) CallFunc(f func() (interface{}, error)) (interface{}, error) {
 	c.setState()
 	switch c.s {
@@ -63,7 +62,6 @@ func (c *Circuitbreaker) CallFunc(f func() (interface{}, error)) (interface{}, e
 		log.Printf("CB: Closed state")
 		output, err := f()
 		if err != nil {
-			//execucao falhou mesmo assim
 			c.recordfailure()
 			return nil, err
 		}
